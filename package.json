@@ -4,6 +4,7 @@
   "description": "Choo example app based on https://yoshuawuyts.gitbooks.io/choo/content/getting-started/your-first-app.html",
   "main": "index.js",
   "scripts": {
+    "serve": "budo index.js --live",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
