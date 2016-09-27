@@ -1,0 +1,16 @@
+{
+  "name": "choodo",
+  "version": "1.0.0",
+  "description": "Choo example app based on https://yoshuawuyts.gitbooks.io/choo/content/getting-started/your-first-app.html",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "choo": "^3.3.0",
+    "xtend": "^4.0.1"
+  }
+}
