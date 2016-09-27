@@ -10,22 +10,6 @@ app.model({
     reducers: {
         receiveTodos: (data, state) => {
             return { todos: data }
-        },
-        addTodo: (data, state) => {
-            const todo = extend(data, {
-                completed: false
-            });
-            const newTodos = state.todos.slice()
-            newTodos.push(todo)
-            return { todos: newTodos }
-        },
-        updateTodo: (data, state) => {
-            oldTodo = state.todos[data.index];
-            console.log(oldTodo);
-            const newTodo = extend(oldTodo, data.updates);
-            const newTodos = state.todos.slice();
-            newTodos[data.index] =  newTodo;
-            return { todos: newTodos }
         }
     },
     effects: {
@@ -33,6 +17,21 @@ app.model({
             store.getAll('todos', (todos) => {
                 send('receiveTodos', todos, done)
             })
+        },
+        addTodo: (data, state, send, done) => {
+            const todo = extend(data, {
+                completed: false
+            });
+            store.add('todos', todo, (todos) => {
+                send('receiveTodos', todos, done)
+            });
+        },
+        updateTodo: (data, state, send, done) => {
+            oldTodo = state.todos[data.index];
+            const todo = extend(oldTodo, data.updates);
+            store.replace('todos', data.index, todo, (todos) => {
+                send('receiveTodos', todos, done)
+            });
         }
     }
 });
@@ -72,25 +71,25 @@ document.body.appendChild(tree);
 
 // localStorage wrapper
 const store = {
-  getAll: (storeName, cb) => {
-    try {
-      cb(JSON.parse(window.localStorage[storeName]))
-    } catch (e) {
-      cb([])
+    getAll: (storeName, cb) => {
+        try {
+            cb(JSON.parse(window.localStorage[storeName]))
+        } catch (e) {
+            cb([])
+        }
+    },
+    add: (storeName, item, cb) => {
+        store.getAll(storeName, (items) => {
+            items.push(item)
+            window.localStorage[storeName] = JSON.stringify(items)
+            store.getAll(storeName, cb);
+        })
+    },
+    replace: (storeName, index, item, cb) => {
+        store.getAll(storeName, (items) => {
+            items[index] = item
+            window.localStorage[storeName] = JSON.stringify(items)
+            store.getAll(storeName, cb);
+        })
     }
-  },
-  add: (storeName, item, cb) => {
-    store.getAll(storeName, (items) => {
-      items.push(item)
-      window.localStorage[storeName] = JSON.stringify(items)
-      cb()
-    })
-  },
-  replace: (storeName, index, item, cb) => {
-    store.getAll(storeName, (items) => {
-      items[index] = item
-      window.localStorage[storeName] = JSON.stringify(items)
-      cb()
-    })
-  }
 }
